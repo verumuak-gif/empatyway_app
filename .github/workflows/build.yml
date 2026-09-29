@@ -1,0 +1,35 @@
+name: Construir EmpatyWay APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - principal
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Preparar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Crear proyecto Android
+        run: flutter create . --platforms=android
+
+      - name: Instalar dependencias
+        run: flutter pub get
+
+      - name: Construir APK
+        run: flutter build apk --release
+
+      - name: Guardar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: empatyway-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
